@@ -10,25 +10,38 @@ import {
     eachDayOfInterval,
     isSameMonth,
     isSameDay,
-    addDays
 } from 'date-fns';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
+import { useEventStore } from '../store/useEventStore';
+import EventModal from './EventModal';
 import './Calendar.css';
 
-const Calendar: React.FC = () => {
+interface CalendarProps {
+    onDateChange: (date: Date) => void;
+}
+
+const Calendar: React.FC<CalendarProps> = ({ onDateChange }) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const getEventsByDate = useEventStore((state) => state.getEventsByDate);
 
     const nextMonth = () => {
-        setCurrentDate(addMonths(currentDate, 1));
+        const newDate = addMonths(currentDate, 1);
+        setCurrentDate(newDate);
+        onDateChange(newDate);
     };
 
     const prevMonth = () => {
-        setCurrentDate(subMonths(currentDate, 1));
+        const newDate = subMonths(currentDate, 1);
+        setCurrentDate(newDate);
+        onDateChange(newDate);
     };
 
     const onDateClick = (day: Date) => {
         setSelectedDate(day);
+        setIsModalOpen(true);
     };
 
     const renderHeader = () => {
@@ -80,12 +93,6 @@ const Calendar: React.FC = () => {
         const endDate = endOfWeek(monthEnd);
 
         const dateFormat = "d";
-        const rows = [];
-        let days = [];
-        let day = startDate;
-        let formattedDate = "";
-
-        // Generate all days to be shown
         const allDays = eachDayOfInterval({
             start: startDate,
             end: endDate
@@ -93,9 +100,10 @@ const Calendar: React.FC = () => {
 
         return (
             <div className="calendar-grid" style={{ borderRadius: '0 0 12px 12px', borderTop: 'none' }}>
-                {allDays.map((dayItem, index) => {
-                    formattedDate = format(dayItem, dateFormat);
+                {allDays.map((dayItem) => {
+                    const formattedDate = format(dayItem, dateFormat);
                     const cloneDay = dayItem;
+                    const dayEvents = getEventsByDate(dayItem);
 
                     return (
                         <div
@@ -108,17 +116,17 @@ const Calendar: React.FC = () => {
                             onClick={() => onDateClick(cloneDay)}
                         >
                             <span className="day-number">{formattedDate}</span>
-                            {/* Placeholder for events */}
-                            {isSameDay(dayItem, new Date()) && (
-                                <div style={{
-                                    fontSize: '0.75rem',
-                                    color: 'var(--accent-color)',
-                                    marginTop: '0.25rem',
-                                    fontWeight: 600
-                                }}>
-                                    Today
-                                </div>
-                            )}
+
+                            <div className="cell-events">
+                                {dayEvents.slice(0, 2).map((event) => (
+                                    <div key={event.id} className={`mini-event-pill ${event.isAllDay ? 'all-day' : ''}`}>
+                                        {event.title}
+                                    </div>
+                                ))}
+                                {dayEvents.length > 2 && (
+                                    <div className="more-events">+{dayEvents.length - 2} more</div>
+                                )}
+                            </div>
                         </div>
                     );
                 })}
@@ -127,11 +135,18 @@ const Calendar: React.FC = () => {
     };
 
     return (
-        <div className="calendar-container">
-            {renderHeader()}
-            {renderDays()}
-            {renderCells()}
-        </div>
+        <>
+            <div className="calendar-container">
+                {renderHeader()}
+                {renderDays()}
+                {renderCells()}
+            </div>
+            <EventModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                selectedDate={selectedDate}
+            />
+        </>
     );
 };
 

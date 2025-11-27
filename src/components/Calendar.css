@@ -116,3 +116,35 @@
     background: rgba(59, 130, 246, 0.1);
     box-shadow: inset 0 0 0 2px var(--accent-color);
 }
+
+.cell-events {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 4px;
+    overflow: hidden;
+}
+
+.mini-event-pill {
+    font-size: 0.7rem;
+    background: var(--accent-color);
+    color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.mini-event-pill.all-day {
+    background: #8b5cf6;
+    /* Purple for all-day events */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.more-events {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    padding-left: 4px;
+}

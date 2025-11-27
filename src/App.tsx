@@ -1,15 +1,24 @@
+import { useState } from 'react';
 import Calendar from './components/Calendar';
+import EventList from './components/EventList';
 import './App.css';
 
 function App() {
+  const [currentDate, setCurrentDate] = useState(new Date());
+
   return (
     <div className="app-container">
       <header className="app-header">
         <h1>My Browser Calendar</h1>
         <p>Manage your schedule with ease</p>
       </header>
-      <main>
-        <Calendar />
+      <main className="main-content">
+        <div className="calendar-section">
+          <Calendar onDateChange={setCurrentDate} />
+        </div>
+        <div className="sidebar-section">
+          <EventList currentDate={currentDate} />
+        </div>
       </main>
     </div>
   );

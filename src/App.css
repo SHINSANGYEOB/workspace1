@@ -1,13 +1,17 @@
 .app-container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 2rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
+  flex-shrink: 0;
 }
 
 .app-header h1 {
@@ -23,4 +27,39 @@
 .app-header p {
   color: var(--text-secondary);
   font-size: 1.25rem;
+}
+
+.main-content {
+  display: flex;
+  gap: 2rem;
+  flex: 1;
+  min-height: 0;
+  /* Important for scrolling inside flex items */
+}
+
+.calendar-section {
+  flex: 3;
+  min-width: 0;
+  /* Prevents overflow */
+}
+
+.sidebar-section {
+  flex: 1;
+  min-width: 300px;
+  max-width: 400px;
+}
+
+@media (max-width: 1024px) {
+  .main-content {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .app-container {
+    height: auto;
+  }
+
+  .sidebar-section {
+    max-width: 100%;
+  }
 }
