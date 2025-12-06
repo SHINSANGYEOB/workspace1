@@ -9,8 +9,7 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>My Browser Calendar</h1>
-        <p>Manage your schedule with ease</p>
+        <h1>행동양식</h1>
       </header>
       <main className="main-content">
         <div className="calendar-section">
